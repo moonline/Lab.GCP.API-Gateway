@@ -1,0 +1,11 @@
+imports:
+  - path: concerts_api.jinja
+
+resources:
+  - name: concerts-api
+    type: concerts_api.jinja
+    properties:
+      region: europe-west3
+      deployment_bucket: gs://concerts-deployment
+      environment: dev
+      project: concerts-2023

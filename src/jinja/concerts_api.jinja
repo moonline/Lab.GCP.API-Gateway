@@ -1,0 +1,27 @@
+{% set function_name = 'concerts-api-handler-' + properties['environment'] %}
+
+resources:
+  # curl -m 40 -X POST https://europe-west3-concerts-2023.cloudfunctions.net/concerts-api-handler-dev?artist=Madonna \
+  #   -H "Authorization: bearer $(gcloud auth print-identity-token)" \
+  #   -H "Content-Type: application/json" -d '{}'
+- type: gcp-types/cloudfunctions-v1:projects.locations.functions
+  name: concerts-api-handler-function
+  properties:
+    parent: projects/{{ properties['project'] }}/locations/{{ properties['region'] }}
+    function: {{ function_name }}
+    sourceArchiveUrl: {{ properties['deployment_bucket'] }}/concerts_api_handler.zip
+    entryPoint: get_concerts
+    runtime: python39
+    timeout: 30s
+    availableMemoryMb: 128
+    location: {{ properties['region'] }}
+    httpsTrigger:
+      url: https://{{ properties['region'] }}-{{ properties['project'] }}.cloudfunctions.net/{{ function_name }}
+    #environmentVariables:
+    #  TABLE_NAME: some_table
+    labels:
+      application: concerts
+      anvironment: {{ properties['environment'] }}
+    # TODO not supported?
+    # availableCpu: 0.083
+    # environment: GEN_2
