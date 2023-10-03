@@ -49,11 +49,9 @@ cd src
 ```
 
 ```sh
-# Zip & deploy code to deployment bucket
-(cd functions/concerts_api_handler; zip -FSr "../concerts_api_handler.zip" *)
-```
+# Initialize Terraform project and download providers
+terraform init
 
-```sh
 # Deploy resources with Terraform
 terraform apply
 ```

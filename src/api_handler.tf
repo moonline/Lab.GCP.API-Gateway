@@ -1,13 +1,31 @@
-resource "google_storage_bucket" "deployment_bucket" {
-  name                        = "${var.project}-deployment-${var.environment}"
-  location                    = var.region
-  uniform_bucket_level_access = true
+locals {
+  functions_source_path            = "./functions"
+  concerts_api_handler_source_name = "concerts_api_handler"
+  concerts_api_handler_source_path = "${local.functions_source_path}/${local.concerts_api_handler_source_name}"
+}
+
+resource "random_uuid" "concerts_api_handler_source_hash" {
+  keepers = {
+    for file in setunion(
+      fileset(local.concerts_api_handler_source_path, "*.py"),
+      fileset(local.concerts_api_handler_source_path, "**/*.py")
+    ) : file => filemd5("${local.concerts_api_handler_source_path}/${file}")
+  }
+}
+
+resource "archive_file" "concerts_api_handler_archive" {
+  type             = "zip"
+  source_dir       = local.concerts_api_handler_source_path
+  output_path      = "${local.functions_source_path}/${local.concerts_api_handler_source_name}.zip"
+  output_file_mode = 0666
+  excludes         = ["__pycache__", "test"]
 }
 
 resource "google_storage_bucket_object" "concerts_api_handler_source_object" {
-  name   = "concerts_api_handler.zip"
-  bucket = google_storage_bucket.deployment_bucket.name
-  source = "./functions/concerts_api_handler.zip"
+  name           = "concerts_api_handler.zip"
+  bucket         = google_storage_bucket.deployment_bucket.name
+  source         = archive_file.concerts_api_handler_archive.output_path
+  detect_md5hash = archive_file.concerts_api_handler_archive.output_base64sha256
 }
 
 /**
@@ -36,7 +54,7 @@ resource "google_cloudfunctions2_function" "concerts_api_handler_function" {
   service_config {
     max_instance_count = 1
     available_memory   = "128Mi"
-    available_cpu = 0.083
+    available_cpu      = 0.083
     timeout_seconds    = 30
     # ingress_settings = "ALLOW_INTERNAL_ONLY"
     all_traffic_on_latest_revision = true
