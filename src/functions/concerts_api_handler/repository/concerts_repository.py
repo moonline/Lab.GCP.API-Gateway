@@ -4,7 +4,17 @@ import os
 from datetime import datetime
 from functools import reduce
 
+# import firebase_admin
+# from firebase_admin import credentials
+# from firebase_admin import firestore
+
 from model.concert import Concert
+
+
+
+# Use a service account.
+# firebase_admin.initialize_app()
+# firestore_client = firestore.client()
 
 
 class ConcertsRepository:
@@ -21,6 +31,7 @@ class ConcertsRepository:
         """
         # TODO
         self.table_name = os.environ.get('TABLE_NAME')
+        self.collection_name = os.environ.get('COLLECTION_NAME')
 
     def find_concerts_by_artist(self, artist: str) -> list[dict]:
         """
@@ -61,6 +72,13 @@ class ConcertsRepository:
             }
         ]
         return [record for record in records if record['artist'] == artist]
+    
+        # documents = (
+        #     firestore_client.collection(self.collection_name)
+        #     .where(filter=FieldFilter("artist", "==", artist))
+        #     .stream()
+        # )
+        # return [document.to_dict() for document in documents]
 
 
     def create_concert(self, concert: Concert) -> Concert:
@@ -84,3 +102,8 @@ class ConcertsRepository:
             'created_date': datetime.now().isoformat()
         }
         return record
+    
+
+        # update_time, city_ref = firestore_client.collection(self.collection_name).add(record)
+
+

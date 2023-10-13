@@ -1,7 +1,9 @@
 variable "region" {
   type        = string
   description = "Google Cloud location / region"
-  default     = "europe-west3"
+  # API Gateway is not supported in europe-west3
+  # https://cloud.google.com/api-gateway/docs/deployment-model#choosing_a_gcp_region
+  default     = "europe-west2"
 }
 
 variable "environment" {

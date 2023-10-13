@@ -41,7 +41,7 @@ gcloud projects create "concerts-2023"
 gcloud config set project "concerts-2023"
 
 # Enable services
-gcloud services enable artifactregistry.googleapis.com cloudapis.googleapis.com cloudbuild.googleapis.com cloudfunctions.googleapis.com logging.googleapis.com monitoring.googleapis.com pubsub.googleapis.com run.googleapis.com storage-api.googleapis.com storage-component.googleapis.com storage.googleapis.com deploymentmanager.googleapis.com
+gcloud services enable artifactregistry.googleapis.com cloudapis.googleapis.com cloudbuild.googleapis.com cloudfunctions.googleapis.com logging.googleapis.com monitoring.googleapis.com pubsub.googleapis.com run.googleapis.com storage-api.googleapis.com storage-component.googleapis.com storage.googleapis.com deploymentmanager.googleapis.com apigateway.googleapis.com firestore.googleapis.com servicecontrol.googleapis.com
 ```
 
 ```sh
@@ -64,6 +64,11 @@ terraform apply
 ```sh
 # Cleanup resources deployed with Terraform
 terraform destroy
+```
+
+```sh
+# Firestore is in beta phase and can only be deleted by CLI
+gcloud alpha firestore databases delete --database=concerts-database
 ```
 
 

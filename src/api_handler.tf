@@ -13,7 +13,7 @@ resource "random_uuid" "concerts_api_handler_source_hash" {
   }
 }
 
-resource "archive_file" "concerts_api_handler_archive" {
+data "archive_file" "concerts_api_handler_archive" {
   type             = "zip"
   source_dir       = local.concerts_api_handler_source_path
   output_path      = "${local.functions_source_path}/${local.concerts_api_handler_source_name}.zip"
@@ -22,10 +22,10 @@ resource "archive_file" "concerts_api_handler_archive" {
 }
 
 resource "google_storage_bucket_object" "concerts_api_handler_source_object" {
-  name           = "concerts_api_handler.zip"
+  name           = "concerts_api_handler-${random_uuid.concerts_api_handler_source_hash.id}.zip"
   bucket         = google_storage_bucket.deployment_bucket.name
-  source         = archive_file.concerts_api_handler_archive.output_path
-  detect_md5hash = archive_file.concerts_api_handler_archive.output_base64sha256
+  source         = data.archive_file.concerts_api_handler_archive.output_path
+  detect_md5hash = data.archive_file.concerts_api_handler_archive.output_base64sha256
 }
 
 /**
@@ -35,13 +35,14 @@ curl -m 40 -X POST https://europe-west3-concerts-2023.cloudfunctions.net/concert
 */
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloudfunctions2_function
 resource "google_cloudfunctions2_function" "concerts_api_handler_function" {
+  location = var.region
+
   name        = "concerts-api-handler-${var.environment}"
   description = "Concerts API Gateway request handler function"
-  location    = var.region
 
   build_config {
     runtime     = "python39"
-    entry_point = "get_concerts"
+    entry_point = "handler"
 
     source {
       storage_source {
@@ -59,9 +60,10 @@ resource "google_cloudfunctions2_function" "concerts_api_handler_function" {
     # ingress_settings = "ALLOW_INTERNAL_ONLY"
     all_traffic_on_latest_revision = true
 
-    # environment_variables = {
-    #     TABLE_NAME = "TODO"
-    # }
+    environment_variables = {
+      TABLE_NAME      = google_firestore_database.concerts_database.id
+      COLLECTION_NAME = "concerts"
+    }
   }
 
   labels = {
