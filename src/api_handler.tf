@@ -22,6 +22,7 @@ data "archive_file" "concerts_api_handler_archive" {
 }
 
 resource "google_storage_bucket_object" "concerts_api_handler_source_object" {
+  # Include source hash into zip name to enforce a function update on source changes
   name           = "concerts_api_handler-${random_uuid.concerts_api_handler_source_hash.id}.zip"
   bucket         = google_storage_bucket.deployment_bucket.name
   source         = data.archive_file.concerts_api_handler_archive.output_path

@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, typing
 import functions_framework
 
@@ -12,12 +13,11 @@ controller = ConcertsController(repository)
 app = Flask(__name__)
 
 
-#@functions_framework.http
 @app.route('/concerts', methods=['GET'])
 def get_concerts() -> typing.ResponseReturnValue:
     """
     Example:
-        curl --location '{API_GATEWAY_DOMAIN}/concerts?artist=Madonna'
+        curl --location '{API_GATEWAY_DOMAIN}/concerts?artist={ARTIST}'
         e.g.
         curl --location 'https://concerts-api-gateway-dev-5pksjh0d.nw.gateway.dev/concerts?artist=Madonna'
 
@@ -37,29 +37,30 @@ def get_concerts() -> typing.ResponseReturnValue:
     return controller.get_concerts_action(parameters, {})
 
 
-# @functions_framework.http
-# def put_concert(request: flask.request) -> flask.typing.ResponseReturnValue:
-#     """
-#     Example:
-#         curl --location 'TODO.../concerts' \
-#             -H 'Content-Type: application/json' \
-#             -d '{ ... }'
-#         e.g.
-#         curl -X PUT --location 'TODO.../concerts' \
-#             -H 'Content-Type: application/json' \
-#             -d '{"artist":"Madonna","concert":"This is Madonna 2023","ticket_sales": 5000000}'
+@app.route('/concerts', methods=['PUT'])
+def put_concert() -> typing.ResponseReturnValue:
+    """
+    Example:
+        curl -X PUT --location '{API_GATEWAY_DOMAIN}/concerts' \
+            -H 'Content-Type: application/json' \
+            -d '{ ... }'
+        e.g.
+        curl -X PUT --location 'https://concerts-api-gateway-dev-5pksjh0d.nw.gateway.dev/concerts' \
+            -H 'Content-Type: application/json' \
+            -d '{"artist":"Madonna","concert":"This is Madonna 2023","ticket_sales": 5000000}'
 
-#     :return: The created concert. Example:
-#         {
-#             "artist": "Madonna",
-#             "concert": "This is Madonna 2023",
-#             "ticket_sales": 5000000,
-#             "created_date": "2023-09-08T14:47:29.915661"
-#         }
-#     """
-#     body: dict = request.json
+    :return: The created concert. Example:
+        {
+            "artist": "Madonna",
+            "concert": "This is Madonna 2023",
+            "ticket_sales": 5000000,
+            "created_date": "2023-09-08T14:47:29.915661"
+        }
+    """
+    # request.json returns Bad request and get_json(silent=True) returns None
+    body: dict = json.loads(request.data)
 
-#     return controller.put_concert_action({}, body)
+    return controller.put_concert_action({}, body)
 
 
 @functions_framework.http

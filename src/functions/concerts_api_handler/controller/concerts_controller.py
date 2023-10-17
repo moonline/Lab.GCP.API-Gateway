@@ -102,6 +102,5 @@ class ConcertsController:
                 f'Parameter invalid! {str(error)}',
                 400
             )
-            raise Exception(f'Parameter invalid! {str(error)}')
 
         return self.repository.create_concert(body)
