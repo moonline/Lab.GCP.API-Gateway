@@ -27,7 +27,7 @@ def get_concerts() -> typing.ResponseReturnValue:
                 "artist": "Madonna",
                 "concert": "This is Madonna 2023",
                 "ticket_sales": 5000000,
-                "created_date": "2023-09-08T14:47:29.915661"
+                "create_date": "2023-09-08T14:47:29.915661"
             },
             ...
         ]
@@ -54,7 +54,7 @@ def put_concert() -> typing.ResponseReturnValue:
             "artist": "Madonna",
             "concert": "This is Madonna 2023",
             "ticket_sales": 5000000,
-            "created_date": "2023-09-08T14:47:29.915661"
+            "create_date": "2023-09-08T14:47:29.915661"
         }
     """
     # request.json returns Bad request and get_json(silent=True) returns None

@@ -68,7 +68,7 @@ terraform destroy
 
 ```sh
 # Firestore is in beta phase and can only be deleted by CLI
-gcloud alpha firestore databases delete --database=concerts-database
+gcloud alpha firestore databases delete --database="(default)"
 ```
 
 

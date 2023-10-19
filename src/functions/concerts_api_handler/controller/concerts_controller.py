@@ -38,7 +38,7 @@ class ConcertsController:
                     "artist": "Madonna",
                     "concert": "This is Madonna 2023",
                     "ticket_sales": 5000000,
-                    "created_date": "2023-09-08T14:47:29.915661"
+                    "create_date": "2023-09-08T14:47:29.915661"
                 },
                 ...
             ]
@@ -58,7 +58,6 @@ class ConcertsController:
             )
 
         return self.repository.find_concerts_by_artist(parameters.get('artist'))
-
 
     def put_concert_action(self, parameters: dict, body: dict) -> Concert:
         """
@@ -86,7 +85,7 @@ class ConcertsController:
                 "artist": "Madonna",
                 "concert": "This is Madonna 2023",
                 "ticket_sales": 5000000,
-                "created_date": "2023-09-08T14:47:29.915661"
+                "create_date": "2023-09-08T14:47:29.915661"
             }
 
         :raises BadRequestError: For validation errors. Example:
@@ -97,10 +96,11 @@ class ConcertsController:
         """
         try:
             validate_put_concert_event(body)
+            concert = Concert.from_dto(body)
         except AssertionError as error:
             return (
                 f'Parameter invalid! {str(error)}',
                 400
             )
 
-        return self.repository.create_concert(body)
+        return self.repository.create_concert(concert).dto
