@@ -58,7 +58,7 @@ def put_concert() -> typing.ResponseReturnValue:
         }
     """
     # request.json returns Bad request and get_json(silent=True) returns None
-    body: dict = json.loads(request.data)
+    body: dict = json.loads(request.data) if bool(request.data) else None
 
     return controller.put_concert_action({}, body)
 

@@ -53,7 +53,9 @@ class ConcertsController:
             validate_get_concerts_event(parameters)
         except AssertionError as error:
             return (
-                f'Parameter invalid! {str(error)}',
+                {
+                    'message': f'Parameter invalid! {str(error)}'
+                },
                 400
             )
 
@@ -99,7 +101,9 @@ class ConcertsController:
             concert = Concert.from_dto(body)
         except AssertionError as error:
             return (
-                f'Parameter invalid! {str(error)}',
+                {
+                    'message': f'Parameter invalid! {str(error)}'
+                },
                 400
             )
 

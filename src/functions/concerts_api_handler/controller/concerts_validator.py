@@ -15,11 +15,11 @@ def validate_get_concerts_event(event: dict) -> None:
     assert bool(event), 'event empty'
 
     expected_parameters = set(['artist'])
-    unexpected_parameters = set(event.keys()) - expected_parameters
-    assert (
-        not bool(unexpected_parameters),
-        f'Unexpected event parameters: {",".join(unexpected_parameters)}. Expected only: {",".join(expected_parameters)}'
+    unexpected_parameters = expected_parameters.symmetric_difference(
+        set(event.keys())
     )
+    assert len(unexpected_parameters) == 0, \
+        f'Unexpected event parameters: {",".join(unexpected_parameters)}. Expected only: {",".join(expected_parameters)}'
 
 
 def validate_put_concert_event(event: dict) -> None:
@@ -43,8 +43,8 @@ def validate_put_concert_event(event: dict) -> None:
     assert bool(event), 'event empty'
 
     expected_parameters = set(['artist', 'concert', 'ticket_sales'])
-    unexpected_parameters = set(event.keys()) - expected_parameters
-    assert (
-        not bool(unexpected_parameters),
-        f'Unexpected event parameters: {",".join(unexpected_parameters)}. Expected only: {",".join(expected_parameters)}'
+    unexpected_parameters = expected_parameters.symmetric_difference(
+        set(event.keys())
     )
+    assert len(unexpected_parameters) == 0, \
+        f'Unexpected or missing event parameters: {",".join(unexpected_parameters)}. Expected only: {",".join(expected_parameters)}'

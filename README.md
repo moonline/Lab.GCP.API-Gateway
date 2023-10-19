@@ -71,6 +71,31 @@ terraform destroy
 gcloud alpha firestore databases delete --database="(default)"
 ```
 
+## Test cases
+
+* Create concert
+
+        curl -X PUT --location 'https://concerts-api-gateway-dev-5pksjh0d.nw.gateway.dev/concerts'
+            -H 'Content-Type: application/json'
+            -d '{"artist":"Madonna","concert":"In time", "ticket_sales": 67280}'
+
+* Empty PUT
+
+        curl -X PUT --location 'https://concerts-api-gateway-dev-5pksjh0d.nw.gateway.dev/concerts'
+            -H 'Content-Type: application/json'
+
+* Missing PUT parameters
+
+        curl -X PUT --location 'https://concerts-api-gateway-dev-5pksjh0d.nw.gateway.dev/concerts'
+            -H 'Content-Type: application/json'
+            -d '{"artist":"Madonna","concert":"This is Madonna 2023", "wrong_param": 500}'
+
+* Invalid PUT parameters
+
+        curl -X PUT --location 'https://concerts-api-gateway-dev-5pksjh0d.nw.gateway.dev/concerts'
+            -H 'Content-Type: application/json'
+            -d '{"artist":"Madonna","concert":"This is Madonna 2023", "ticket_sales": -5}'
+
 
 ## Resources
 
