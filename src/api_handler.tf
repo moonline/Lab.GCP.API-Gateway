@@ -62,7 +62,6 @@ resource "google_cloudfunctions2_function" "concerts_api_handler_function" {
     all_traffic_on_latest_revision = true
 
     environment_variables = {
-      TABLE_NAME      = google_firestore_database.concerts_database.id
       COLLECTION_NAME = "concerts"
     }
   }
