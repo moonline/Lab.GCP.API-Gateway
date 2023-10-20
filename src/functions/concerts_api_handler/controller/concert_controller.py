@@ -1,21 +1,25 @@
 from __future__ import annotations
 
 from model.concert import Concert
-from repository.concerts_repository import ConcertsRepository
-from controller.concerts_validator import validate_get_concerts_event, validate_put_concert_event
+from repository.concert_repository import ConcertRepository
+from controller.concert_validator import validate_get_concerts_event, validate_put_concert_event
 
 
-class ConcertsController:
-    def __init__(self, repository: ConcertsRepository) -> ConcertsController:
+class ConcertController:
+    def __init__(self, repository: ConcertRepository) -> ConcertController:
         """
         Example:
-            from repository.concerts_repository import ConcertsRepository
-            from controller.concerts_controller import ConcertsController
+            from repository.concert_repository import ConcertRepository
+            from controller.concert_controller import ConcertController
 
-            repository = ConcertsRepository()
-            controller = ConcertsController(repository)
+            repository = ConcertRepository()
+            controller = ConcertController(repository)
 
-        :return: A ConcertsController instance
+        :param repository: A repository to interact with persistence
+        :type repository: ConcertRepository
+
+        :return: A ConcertController instance
+        :rtype: ConcertController
         """
         self.repository = repository
 
@@ -27,10 +31,19 @@ class ConcertsController:
                 {}
             )
 
-        :param dict parameters: API GW url parameters. Example:
+        :param parameters: API GW url parameters. Example:
             { "artist": "Madonna" }
-        :param dict body: API GW request body. Example:
+        :type parameters: dict
+
+        :param body: API GW request body. Example:
             {}
+        :type body: dict
+
+        :raises BadRequestError: For validation errors. Example:
+            {
+                "statusCode": 400,
+                "message": "Parameter invalid! artist must have minimal 2 characters"
+            }
 
         :return: A list of concerts matching the parameters. Example:
             [
@@ -42,12 +55,7 @@ class ConcertsController:
                 },
                 ...
             ]
-
-        :raises BadRequestError: For validation errors. Example:
-            {
-                "statusCode": 400,
-                "message": "Parameter invalid! artist must have minimal 2 characters"
-            }
+        :rtype: list
         """
         try:
             validate_get_concerts_event(parameters)
@@ -76,13 +84,22 @@ class ConcertsController:
                 }
             )
 
-        :param dict parameters: API GW url parameters. Example:
+        :param parameters: API GW url parameters. Example:
             {}
-        :param dict body: API GW request body. Example:
+        :type parameters: dict
+
+        :param body: API GW request body. Example:
             {
                 "artist": "Madonna",
                 "concert": "This is Madonna 2023",
                 "ticket_sales": 5000000
+            }
+        :type body: dict
+
+        :raises BadRequestError: For validation errors. Example:
+            {
+                "statusCode": 400,
+                "message": "Parameter invalid! artist must have minimal 2 characters"
             }
 
         :return: The created concert. Example:
@@ -92,12 +109,7 @@ class ConcertsController:
                 "ticket_sales": 5000000,
                 "create_date": "2023-09-08T14:47:29.915661"
             }
-
-        :raises BadRequestError: For validation errors. Example:
-            {
-                "statusCode": 400,
-                "message": "Parameter invalid! artist must have minimal 2 characters"
-            }
+        :rtype: dict
         """
         try:
             validate_put_concert_event(body)

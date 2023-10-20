@@ -18,25 +18,33 @@ class Concert:
             }
             Concert.validate(dto)
 
-        :param dict dto:                Must be DEFINED
-        :param str dto.artist:          Must be DEFINED
-        :param str dto.concert:         Must be DEFINED
-        :param int dto.ticket_sales:    Must be DEFINED
+        :param dto:                 Validation: Must be DEFINED
+        :type dto: dict
 
-        :return: A new concert
+        :param dto.artist:          Validation: Must have more than 2 characters
+        :type dto.artist: str
+
+        :param dto.concert:         Validation: Must have more than 2 characters
+        :type dto.concert: str
+
+        :param dto.ticket_sales:    Validation: Must be a positive number
+        :type dto.ticket_sales: int
 
         :raises AssertionError: In case of invalid properties
         """
         assert bool(dto), 'concert DTO should not be empty'
 
         artist = dto.get('artist')
-        assert bool(artist) and len(artist) > 2, 'artist must have minimal 2 characters'
+        assert bool(artist) and len(artist) > 2, \
+            'artist must have minimal 2 characters'
 
         concert = dto.get('concert')
-        assert bool(concert) and len(concert) > 2, 'concert must have minimal 2 characters'
+        assert bool(concert) and len(concert) > 2, \
+            'concert must have minimal 2 characters'
 
         ticket_sales = dto.get('ticket_sales')
-        assert bool(ticket_sales) and ticket_sales >= 0, 'ticket_sales must be a positive amount'
+        assert bool(ticket_sales) and ticket_sales >= 0, \
+            'ticket_sales must be a positive amount'
 
     @classmethod
     def from_dto(cls, dto: dict) -> Concert:
@@ -52,11 +60,13 @@ class Concert:
             }
             concert = Concert.from_dto(dto)
 
-        :param dict dto: A concert DTO (dict)
-
-        :return: A new concert
+        :param dto: A concert DTO (dict)
+        :type dto: dict
 
         :raises AssertionError: In case of invalid properties
+
+        :return: A new Concert
+        :rtype: Concert
         """
         cls.validate(dto)
 
@@ -64,10 +74,37 @@ class Concert:
             dto['artist'],
             dto['concert'],
             dto['ticket_sales'],
-            datetime.fromisoformat(dto['create_date']) if dto.get('create_date') else None
+            (
+                datetime.fromisoformat(dto['create_date'])
+                if dto.get('create_date') else None
+            )
         )
 
-    def __init__(self, artist: str, concert: str, ticket_sales: int, create_date: datetime) -> None:
+    def __init__(self, artist: str, concert: str, ticket_sales: int, create_date: datetime) -> Concert:
+        """
+        Example:
+            concert = Concert(
+                "Madonna",
+                "This is Madonna 2023",
+                5000000,
+                datetime(2023,09,08,14,47,29,915661)
+            )
+
+        :param artist: Concert artist
+        :type artist: str
+
+        :param concert: Concert name
+        :type concert: str
+
+        :param ticket_sales: Total ticket sales
+        :type ticket_sales: int
+
+        :param create_date: Concert creation date
+        :type create_date: datetime, optional
+
+        :return: A Concert instance
+        :rtype: Concert
+        """
         self.artist = artist
         self.concert = concert
         self.ticket_sales = ticket_sales
@@ -83,6 +120,7 @@ class Concert:
                 "ticket_sales": 5000000,
                 "create_date": "2023-09-08T14:47:29.915661"
             }
+        :rtype: dict
         """
         return {
             'artist': self.artist,

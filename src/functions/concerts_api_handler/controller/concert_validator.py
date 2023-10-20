@@ -7,15 +7,18 @@ def validate_get_concerts_event(event: dict) -> None:
             { "artist": "Madonna" }
         )
 
-    :param dict event:          Must be DEFINED
-    :param str event.artist:    Must be DEFINED
+    :param event:           Validation: Must be DEFINED
+    :type event: dict
+
+    :param event.artist:    Validation: Must be DEFINED
+    :type: event.artist: str
 
     :raises AssertionError: In case of invalid properties
     """
     assert bool(event), 'event empty'
 
-    expected_parameters = set(['artist'])
-    unexpected_parameters = expected_parameters.symmetric_difference(
+    expected_parameters = ['artist']
+    unexpected_parameters = set(expected_parameters).symmetric_difference(
         set(event.keys())
     )
     assert len(unexpected_parameters) == 0, \
@@ -33,17 +36,24 @@ def validate_put_concert_event(event: dict) -> None:
             "ticket_sales": 5000000
         })
 
-    :param dict event:              Must be DEFINED
-    :param str event.artist:        Must be DEFINED
-    :param str event.concert:       Must be DEFINED
-    :param int event.ticket_sales:  Must be DEFINED
+    :param event:               Validation: Must be DEFINED
+    :type event: dict
+
+    :param dto.artist:          Validation: Must be DEFINED
+    :type dto.artist: str
+
+    :param dto.concert:         Validation: Must be DEFINED
+    :type dto.concert: str
+
+    :param dto.ticket_sales:    Validation: Must be DEFINED
+    :type dto.ticket_sales: int
 
     :raises AssertionError: In case of invalid properties
     """
     assert bool(event), 'event empty'
 
-    expected_parameters = set(['artist', 'concert', 'ticket_sales'])
-    unexpected_parameters = expected_parameters.symmetric_difference(
+    expected_parameters = ['artist', 'concert', 'ticket_sales']
+    unexpected_parameters = set(expected_parameters).symmetric_difference(
         set(event.keys())
     )
     assert len(unexpected_parameters) == 0, \

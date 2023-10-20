@@ -2,12 +2,12 @@ import json
 from flask import Flask, request, typing
 import functions_framework
 
-from controller.concerts_controller import ConcertsController
-from repository.concerts_repository import ConcertsRepository
+from controller.concert_controller import ConcertController
+from repository.concert_repository import ConcertRepository
 
 
-repository = ConcertsRepository()
-controller = ConcertsController(repository)
+repository = ConcertRepository()
+controller = ConcertController(repository)
 
 
 app = Flask(__name__)
@@ -31,6 +31,7 @@ def get_concerts() -> typing.ResponseReturnValue:
             },
             ...
         ]
+    :rtype: list
     """
     parameters: dict = request.args
 
@@ -56,6 +57,7 @@ def put_concert() -> typing.ResponseReturnValue:
             "ticket_sales": 5000000,
             "create_date": "2023-09-08T14:47:29.915661"
         }
+    :rtype: dict
     """
     # request.json returns Bad request and get_json(silent=True) returns None
     body: dict = json.loads(request.data) if bool(request.data) else None
@@ -69,7 +71,7 @@ def handler(http_request: request) -> typing.ResponseReturnValue:
     Flask app router to dispatch requests.
     See https://medium.com/google-cloud/use-multiple-paths-in-cloud-functions-python-and-flask-fc6780e560d3
 
-    Example request:
+    :param http_request: An API Gateway request. Example:
         {
             "method": "GET",
             "scheme": "http",
@@ -106,6 +108,10 @@ def handler(http_request: request) -> typing.ResponseReturnValue:
             "host": "europe-west2-concerts-2023.cloudfunctions.net",
             "url": "http://europe-west2-concerts-2023.cloudfunctions.net/?artist=Madonna",
         }
+    :type http_request: flask.request
+
+    :return: Flask dispatch response
+    :rtype: json
     """
     app_context = app.test_request_context(
         path=http_request.full_path,

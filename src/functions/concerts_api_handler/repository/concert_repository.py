@@ -15,7 +15,7 @@ firebase_admin.initialize_app()
 firestore_client = firestore.client()
 
 
-class ConcertsRepository:
+class ConcertRepository:
     @staticmethod
     def concert_to_document(concert: Concert) -> dict:
         return {
@@ -29,31 +29,35 @@ class ConcertsRepository:
     def document_to_concert(record: dict) -> Concert:
         return Concert(**record)
 
-    def __init__(self) -> ConcertsRepository:
+    def __init__(self) -> ConcertRepository:
         """
         Example:
-            os.environ['TABLE_NAME'] = 'concerts'
+            os.environ['COLLECTION_NAME'] = 'concerts'
 
-            from repository.concerts_repository import ConcertsRepository
+            from repository.concerts_repository import ConcertRepository
 
-            repository = ConcertsRepository()
+            repository = ConcertRepository()
 
-        :return: A ConcertsRepository instance
+        :return: A ConcertRepository instance
+        :rtype: ConcertRepository
         """
-        collection_name = os.environ.get('COLLECTION_NAME')
-        self.collection = firestore_client.collection(collection_name)
+        self.collection = firestore_client.collection(
+            os.environ.get('COLLECTION_NAME')
+        )
 
-    def find_concerts_by_artist(self, artist: str) -> list[dict]:
+    def find_concerts_by_artist(self, artist: str) -> list[Concert]:
         """
         Finds all concerts that match the given artist
 
         Example:
-            repository = ConcertsRepository()
+            repository = ConcertRepository()
             repository.find_concerts_by_artist('Madonna')
 
-        :param string artist: An artist name
+        :param artist: An artist name
+        :type artist: str
 
         :return: A list of concerts
+        :rtype: list
         """
         concert_documents = (
             self.collection
@@ -70,7 +74,7 @@ class ConcertsRepository:
         Add a new concert to the database
 
         Example:
-            repository = ConcertsRepository()
+            repository = ConcertRepository()
             concert = Concert(
                 'Zoe',
                 'French tales',
@@ -78,11 +82,14 @@ class ConcertsRepository:
             )
             repository.add_concert(concert)
 
-        :param Concert concert: A concert object to be persisted
+        :param concert: A concert object to be persisted
+        :type concert: Concert
 
         :return: The persisted concert
+        :rtype: Concert
         """
         concert.create_date = datetime.now()
         record = self.concert_to_document(concert)
+        # TODO check success
         self.collection.add(record)
         return concert

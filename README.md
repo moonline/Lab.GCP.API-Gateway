@@ -95,6 +95,13 @@ gcloud alpha firestore databases delete --database="(default)"
         curl -X PUT --location 'https://concerts-api-gateway-dev-5pksjh0d.nw.gateway.dev/concerts'
             -H 'Content-Type: application/json'
             -d '{"artist":"Madonna","concert":"This is Madonna 2023", "ticket_sales": -5}'
+* List concerts
+
+        curl --location 'https://concerts-api-gateway-dev-5pksjh0d.nw.gateway.dev/concerts?artist=Madonna'
+
+* Invalid list parameters
+
+        curl --location 'https://concerts-api-gateway-dev-5pksjh0d.nw.gateway.dev/concerts?song_writer=Madonna'
 
 
 ## Resources
