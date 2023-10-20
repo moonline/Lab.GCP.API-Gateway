@@ -59,7 +59,10 @@ class ConcertsController:
                 400
             )
 
-        return self.repository.find_concerts_by_artist(parameters.get('artist'))
+        return [
+            concert.dto
+            for concert in self.repository.find_concerts_by_artist(parameters.get('artist'))
+        ]
 
     def put_concert_action(self, parameters: dict, body: dict) -> Concert:
         """

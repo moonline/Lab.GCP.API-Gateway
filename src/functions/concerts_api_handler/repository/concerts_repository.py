@@ -6,6 +6,7 @@ from functools import reduce
 
 import firebase_admin
 from firebase_admin import firestore
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 from model.concert import Concert
 
@@ -16,13 +17,17 @@ firestore_client = firestore.client()
 
 class ConcertsRepository:
     @staticmethod
-    def to_record(concert: Concert) -> dict:
+    def concert_to_document(concert: Concert) -> dict:
         return {
             'artist': concert.artist,
             'concert': concert.concert,
             'ticket_sales': concert.ticket_sales,
             'create_date': concert.create_date
         }
+
+    @staticmethod
+    def document_to_concert(record: dict) -> Concert:
+        return Concert(**record)
 
     def __init__(self) -> ConcertsRepository:
         """
@@ -35,7 +40,8 @@ class ConcertsRepository:
 
         :return: A ConcertsRepository instance
         """
-        self.collection_name = os.environ.get('COLLECTION_NAME')
+        collection_name = os.environ.get('COLLECTION_NAME')
+        self.collection = firestore_client.collection(collection_name)
 
     def find_concerts_by_artist(self, artist: str) -> list[dict]:
         """
@@ -49,41 +55,15 @@ class ConcertsRepository:
 
         :return: A list of concerts
         """
-        records = [
-            {
-                "artist": "Madonna",
-                "concert": "This is Madonna 2023",
-                "ticket_sales": 5000000,
-                "create_date": "2023-09-08T14:47:29.915661"
-            },
-            {
-                "artist": "Madonna",
-                "concert": "In Time",
-                "ticket_sales": 56565135,
-                "create_date": "2021-06-06T15:57:39.915661"
-            },
-            {
-                "artist": "DJ Bobo",
-                "concert": "Freedom",
-                "ticket_sales": 6688,
-                "create_date": "2020-10-11T05:44:22.915661"
-            },
-            {
-                "artist": "Sophie Ellis Bextor",
-                "concert": "Murder on the dance floor",
-                "ticket_sales": 45687974,
-                "create_date": "2022-01-01T17:36:45.915661"
-            }
+        concert_documents = (
+            self.collection
+                .where(filter=FieldFilter("artist", "==", artist))
+                .stream()
+        )
+        return [
+            self.document_to_concert(concert_document.to_dict())
+            for concert_document in concert_documents
         ]
-        return [record for record in records if record['artist'] == artist]
-    
-        # documents = (
-        #     firestore_client.collection(self.collection_name)
-        #     .where(filter=FieldFilter("artist", "==", artist))
-        #     .stream()
-        # )
-        # return [document.to_dict() for document in documents]
-
 
     def create_concert(self, concert: Concert) -> Concert:
         """
@@ -103,10 +83,6 @@ class ConcertsRepository:
         :return: The persisted concert
         """
         concert.create_date = datetime.now()
-        record = self.to_record(concert)
-        firestore_client.collection(self.collection_name).add(record)
+        record = self.concert_to_document(concert)
+        self.collection.add(record)
         return concert
-    
-
-
-
