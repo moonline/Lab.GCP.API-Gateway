@@ -26,20 +26,23 @@ flowchart LR
 
 API("`
     fa:fa-th-large
-    _GCP API Gateway_
+    GCP API Gateway
+    ―――――――――
     Concerts API
 `") -->|invoke| Handler
 
 Handler("`
     fa:fa-code
-    _GCP Function_
+    GCP Function
+    ――――――――――
     concerts_api_handler
 `") -->|query/add| Database
 Handler -->|response| API
 
 Database[("`
     fa:fa-database
-    _GCP Firestore_
+    GCP Firestore
+    ――――――――――
     Concerts collection
 `")] -->|Concerts| Handler
 ```
@@ -48,34 +51,38 @@ Database[("`
 
 ```mermaid
 flowchart LR
-    API("`
+    API("
         API
-        _/_
-    `")
+        ――
+        /
+    ")
 
     API --> concerts
 
-    concerts["`
+    concerts["
         endpoint
-        _concerts/_
-    `"]
+        ―――――
+        concerts/
+    "]
 
-    concerts --> get["`
+    concerts --> get["
         GET
-        _query parameters:_
+        ―――――――――
+        query parameters:
         - artist=string
-        _returns:_
+        returns:
         - Concert[]
-    `"]
-    concerts --> put["`
+    "]
+    concerts --> put["
         PUT
-        _request body:_
+        ―――――――――
+        request body:
         - artist: string
         - concert: string
         - ticket_sales: number
-        _returns:_
+        returns:
         - Concert
-    `"]
+    "]
 ```
 
 
@@ -96,6 +103,8 @@ router: put_concert()
 router --> ConcertController: resolve route
 
 class ConcertController {
+   repository
+
    get_concerts_action()
    put_concert_action()
 }
@@ -117,6 +126,8 @@ class Concert {
 }
 
 class ConcertRepository {
+   collection
+
    find_concert_by_artist()
    create_concert()
    concert_to_document()
@@ -129,9 +140,9 @@ class ConcertRepository {
 ```mermaid
 erDiagram
 
-concerts["collection: concerts"] {}
-concerts ||--|{ concert : contains
-concert["document: concert"] {
+concerts-collection {}
+concerts-collection ||--|{ concert-document : contains
+concert-document {
     string artist
     string concert
     number ticket_sales
@@ -242,4 +253,8 @@ gcloud alpha firestore databases delete --database="(default)"
 * [Create a 2nd gen Cloud Function by using the Google Cloud CLI](https://cloud.google.com/functions/docs/create-deploy-gcloud#functions_quickstart_helloworld-python)
 * [How to use Google API Gateway with Cloud Run](https://medium.com/google-cloud/how-to-use-google-api-gateway-with-cloud-run-60698959b342)
 * [API Gateway > Documentation > Passing data to and from the backend service](https://cloud.google.com/api-gateway/docs/passing-data)
+<<<<<<< HEAD
 * [Least privilege for Cloud Functions using Cloud IAM](https://cloud.google.com/blog/products/application-development/least-privilege-for-cloud-functions-using-cloud-iam)
+=======
+* [Least privilege for Cloud Functions using Cloud IAM](https://cloud.google.com/blog/products/application-development/least-privilege-for-cloud-functions-using-cloud-iam)
+>>>>>>> origin/main
