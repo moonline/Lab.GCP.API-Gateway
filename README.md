@@ -11,6 +11,92 @@ A basic API with API Gateway, Cloud Functions, Firestore and Terraform.
 > On the other side Google is pushing Terraform.
 > Therefore Terraform is used here instead of Deployment manager.
 
+* [Google Cloud API Gateway](https://cloud.google.com/api-gateway)
+* [Google Cloud Functions](https://cloud.google.com/functions)
+* [Google Cloud Firestore](https://cloud.google.com/firestore)
+* [Cloud Funcgtions Framework](https://cloud.google.com/functions/docs/functions-framework)
+* [Terraform](https://www.terraform.io/)
+
+
+## Architecture
+
+<!-- Edit: https://mermaid.live/ -->
+```mermaid
+flowchart LR
+
+API("`
+    fa:fa-th-large
+    _GCP API Gateway_
+    Concerts API
+`") -->|invoke| Handler
+
+Handler("`
+    fa:fa-code
+    _GCP Function_
+    concerts_api_handler
+`") -->|query/add| Database
+Handler -->|response| API
+
+Database[("`
+    fa:fa-database
+    _GCP Firestore_
+    Concerts collection
+`")] -->|Concerts| Handler
+```
+
+### API
+
+TODO
+
+
+### Handler
+
+```mermaid
+classDiagram
+
+class Flask {
+   route()
+   test_request_context()
+   full_dispatch_request()
+}
+
+router --|> Flask
+router: get_concerts()
+router: put_concert()
+router --> ConcertController: resolve route
+
+class ConcertController {
+   get_concerts_action()
+   put_concert_action()
+}
+ConcertController --> ConcertRepository: Find / Create concert(s)
+ConcertController --> concert_validator: Validate event
+
+concert_validator: validate_get_concerts_event()
+concert_validator: validate_put_concert_event()
+
+class Concert {
+   string artist
+   string concert
+   int ticket_sales
+   string created_date
+   validate()
+   from_dto()
+   dto()
+}
+
+class ConcertRepository {
+   find_concert_by_artist()
+   create_concert()
+   concert_to_document()
+   document_to_concert()
+}
+```
+
+### Database
+
+TODO
+
 
 ## Development
 
@@ -109,3 +195,4 @@ gcloud alpha firestore databases delete --database="(default)"
 * [Create a 2nd gen Cloud Function by using the Google Cloud CLI](https://cloud.google.com/functions/docs/create-deploy-gcloud#functions_quickstart_helloworld-python)
 * [How to use Google API Gateway with Cloud Run](https://medium.com/google-cloud/how-to-use-google-api-gateway-with-cloud-run-60698959b342)
 * [API Gateway > Documentation > Passing data to and from the backend service](https://cloud.google.com/api-gateway/docs/passing-data)
+* [Least privilege for Cloud Functions using Cloud IAM](https://cloud.google.com/blog/products/application-development/least-privilege-for-cloud-functions-using-cloud-iam)
