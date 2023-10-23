@@ -46,7 +46,37 @@ Database[("`
 
 ### API
 
-TODO
+```mermaid
+flowchart LR
+    API("`
+        API
+        _/_
+    `")
+
+    API --> concerts
+
+    concerts["`
+        endpoint
+        _concerts/_
+    `"]
+
+    concerts --> get["`
+        GET
+        _query parameters:_
+        - artist=string
+        _returns:_
+        - Concert[]
+    `"]
+    concerts --> put["`
+        PUT
+        _request body:_
+        - artist: string
+        - concert: string
+        - ticket_sales: number
+        _returns:_
+        - Concert
+    `"]
+```
 
 
 ### Handler
@@ -79,7 +109,8 @@ class Concert {
    string artist
    string concert
    int ticket_sales
-   string created_date
+   datetime created_date
+
    validate()
    from_dto()
    dto()
@@ -95,7 +126,18 @@ class ConcertRepository {
 
 ### Database
 
-TODO
+```mermaid
+erDiagram
+
+concerts["collection: concerts"] {}
+concerts ||--|{ concert : contains
+concert["document: concert"] {
+    string artist
+    string concert
+    number ticket_sales
+    timestamp created_date
+}
+```
 
 
 ## Development
@@ -130,6 +172,8 @@ gcloud config set project "concerts-2023"
 gcloud services enable artifactregistry.googleapis.com cloudapis.googleapis.com cloudbuild.googleapis.com cloudfunctions.googleapis.com logging.googleapis.com monitoring.googleapis.com pubsub.googleapis.com run.googleapis.com storage-api.googleapis.com storage-component.googleapis.com storage.googleapis.com deploymentmanager.googleapis.com apigateway.googleapis.com firestore.googleapis.com servicecontrol.googleapis.com
 ```
 
+### Terraform deployment
+
 ```sh
 cd src
 ```
@@ -147,6 +191,8 @@ terraform apply
 > In this simple Terraform setup, the state file is created locally.
 > For a production-ready setup, the state file should be synchronized to the cloud, e.g. the HashiCorp cloud or a Google Storage bucket.
 
+### Cleanup
+
 ```sh
 # Cleanup resources deployed with Terraform
 terraform destroy
@@ -156,6 +202,7 @@ terraform destroy
 # Firestore is in beta phase and can only be deleted by CLI
 gcloud alpha firestore databases delete --database="(default)"
 ```
+
 
 ## Test cases
 
