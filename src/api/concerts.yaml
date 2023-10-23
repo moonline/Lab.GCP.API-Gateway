@@ -1,0 +1,164 @@
+# Validator: https://editor.swagger.io/
+swagger: "2.0"
+
+info:
+  title: concerts-api # API_ID
+  description: A REST API to create and list concerts
+  version: 1.0.0
+
+schemes:
+  - https
+
+produces:
+  - application/json
+
+definitions:
+  ErrorResponse:
+    type: object
+    properties:
+      message:
+        type: string
+    required:
+      - message
+  CreateConcert:
+    type: object
+    properties:
+      artist:
+        description: The name of the artist of the concert
+        type: string
+      concert:
+        description: The name of the concert
+        type: string
+      ticket_sales:
+        description: Sales made for the concert
+        type: string
+    required:
+      - artist
+      - concert
+      - ticket_sales
+  Concert:
+    type: object
+    properties:
+      artist:
+        description: The name of the artist of the concert
+        type: string
+      concert:
+        description: The name of the concert
+        type: string
+      ticket_sales:
+        description: Sales made for the concert
+        type: string
+      create_date:
+        description: Create date in ISO format
+        type: string
+    required:
+      - artist
+      - concert
+      - ticket_sales
+      - create_date
+  ListConcertsByArtistResponse:
+    description: Returns a list of concerts matching the given artist
+    type: array
+    items:
+      $ref: "#/definitions/Concert"
+  CreateConcertResponse:
+    $ref: "#/definitions/Concert"
+
+responses:
+  BadRequest:
+    description: The provided parameters were invalid.
+    schema:
+      $ref: "#/definitions/ErrorResponse"
+  InternalServerError:
+    description: Unexpected error.
+    schema:
+      $ref: "#/definitions/ErrorResponse"
+
+tags:
+  - name: concerts
+    description: Concert endpoints
+
+paths:
+  /concerts:
+    get:
+      operationId: get-concerts
+      summary: Returns a list of concerts
+      tags:
+        - get-concerts
+      parameters:
+        - in: query
+          name: artist
+          type: string
+          description: Artist to filter the concerts
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successfully retrieved concerts
+          schema:
+            $ref: "#/definitions/ListConcertsByArtistResponse"
+          # example:
+          #   [{
+          #     "artist": "Madonna",
+          #     "concert": "This is Madonna 2023",
+          #     "ticket_sales": 5000000,
+          #     "create_date": "2023-09-08T14:47:29.915661"
+          #   }]
+        400:
+          description: Bad request
+          schema:
+            $ref: "#/responses/BadRequest"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/responses/InternalServerError"
+      # https://cloud.google.com/api-gateway/docs/passing-data
+      x-google-backend:
+        address: "${concerts_api_handler_function_url}"
+        path_translation: APPEND_PATH_TO_ADDRESS
+
+    put:
+      operationId: put-concert
+      description: Adds a new concert
+      tags:
+        - create-concert
+      parameters:
+        - in: body
+          name: concert
+          schema:
+            $ref: "#/definitions/CreateConcert"
+          # example:
+          #   {
+          #     "artist": "Madonna",
+          #     "concert": "This is Madonna 2023",
+          #     "ticket_sales": 5000000
+          #   }
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Created concert
+          schema:
+            $ref: "#/definitions/ListConcertsByArtistResponse"
+          # example:
+          #   {
+          #     "artist": "Madonna",
+          #     "concert": "This is Madonna 2023",
+          #     "ticket_sales": 5000000,
+          #     "create_date": "2023-09-08T14:47:29.915661"
+          #   }
+        400:
+          description: Bad request
+          schema:
+            $ref: "#/responses/BadRequest"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/responses/InternalServerError"
+      # https://cloud.google.com/api-gateway/docs/passing-data
+      x-google-backend:
+        address: "${concerts_api_handler_function_url}"
+        path_translation: APPEND_PATH_TO_ADDRESS
