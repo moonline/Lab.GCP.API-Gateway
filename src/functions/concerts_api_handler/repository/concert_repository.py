@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import os
 from datetime import datetime
-from functools import reduce
 
 import firebase_admin
 from firebase_admin import firestore
@@ -29,14 +28,17 @@ class ConcertRepository:
     def document_to_concert(record: dict) -> Concert:
         return Concert(**record)
 
-    def __init__(self) -> ConcertRepository:
+    def __init__(self, firestore_client=firestore_client) -> ConcertRepository:
         """
         Example:
             os.environ['COLLECTION_NAME'] = 'concerts'
 
-            from repository.concerts_repository import ConcertRepository
+            from repository.concert_repository import ConcertRepository
 
             repository = ConcertRepository()
+
+        :param firestore_client: A firestore client instance
+        :type firestore_client: firestore.client
 
         :return: A ConcertRepository instance
         :rtype: ConcertRepository
@@ -90,6 +92,9 @@ class ConcertRepository:
         """
         concert.create_date = datetime.now()
         record = self.concert_to_document(concert)
-        # TODO check success
-        self.collection.add(record)
-        return concert
+        update_time, ref = self.collection.add(record)
+
+        if bool(update_time) and bool(ref):
+            return concert
+        else:
+            raise Exception("An error occurred when storing the concert")

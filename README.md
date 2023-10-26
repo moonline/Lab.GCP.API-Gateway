@@ -1,6 +1,6 @@
 # Lab.GCP.API-Gateway
 
-A basic API with API Gateway, Cloud Functions, Firestore and Terraform.
+A basic API with Google Cloud API Gateway, OpenAPI 2.0, Google Cloud Functions, Flask, Google Cloud Firestore and Terraform.
 
 > **_NOTE:_**
 > 
@@ -11,11 +11,21 @@ A basic API with API Gateway, Cloud Functions, Firestore and Terraform.
 > On the other side Google is pushing Terraform.
 > Therefore Terraform is used here instead of Deployment manager.
 
+
 * [Google Cloud API Gateway](https://cloud.google.com/api-gateway)
+* [OpenAPI 2.0](https://cloud.google.com/api-gateway/docs/openapi-overview)
 * [Google Cloud Functions](https://cloud.google.com/functions)
+* [Cloud Functions Framework](https://cloud.google.com/functions/docs/functions-framework)
 * [Google Cloud Firestore](https://cloud.google.com/firestore)
-* [Cloud Funcgtions Framework](https://cloud.google.com/functions/docs/functions-framework)
 * [Terraform](https://www.terraform.io/)
+
+
+API Handler clean code practices:
+
+* **MVC pattern** - https://python.plainenglish.io/model-view-controller-mvc-pattern-in-python-a-beginners-guide-b0d9855068eb
+* **Repository pattern** - https://medium.com/@pererikbergman/repository-design-pattern-e28c0f3e4a30
+* **Validators**
+* **Router**
 
 
 ## Architecture
@@ -118,7 +128,7 @@ class Concert {
    string artist
    string concert
    int ticket_sales
-   datetime created_date
+   datetime create_date
 
    validate()
    from_dto()
@@ -146,7 +156,7 @@ concert-document {
     string artist
     string concert
     number ticket_sales
-    timestamp created_date
+    timestamp create_date
 }
 ```
 

@@ -14,10 +14,10 @@ app = Flask(__name__)
 
 
 @app.route('/concerts', methods=['GET'])
-def get_concerts() -> typing.ResponseReturnValue:
+def get_concerts() -> list[dict]:
     """
     Example:
-        curl --location '{API_GATEWAY_DOMAIN}/concerts?artist={ARTIST}'
+        curl --location 'https://{API_GATEWAY_DOMAIN}/concerts?artist={ARTIST}'
         e.g.
         curl --location 'https://concerts-api-gateway-dev-5pksjh0d.nw.gateway.dev/concerts?artist=Madonna'
 
@@ -39,7 +39,7 @@ def get_concerts() -> typing.ResponseReturnValue:
 
 
 @app.route('/concerts', methods=['PUT'])
-def put_concert() -> typing.ResponseReturnValue:
+def put_concert() -> dict:
     """
     Example:
         curl -X PUT --location '{API_GATEWAY_DOMAIN}/concerts' \

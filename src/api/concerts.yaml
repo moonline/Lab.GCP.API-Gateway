@@ -95,16 +95,16 @@ paths:
         - application/json
       responses:
         200:
-          description: Successfully retrieved concerts
+          description: >
+            Successfully retrieved concerts. Example:
+              [{
+                "artist": "Madonna",
+                "concert": "This is Madonna 2023",
+                "ticket_sales": 5000000,
+                "create_date": "2023-09-08T14:47:29.915661"
+              }]
           schema:
             $ref: "#/definitions/ListConcertsByArtistResponse"
-          # example:
-          #   [{
-          #     "artist": "Madonna",
-          #     "concert": "This is Madonna 2023",
-          #     "ticket_sales": 5000000,
-          #     "create_date": "2023-09-08T14:47:29.915661"
-          #   }]
         400:
           description: Bad request
           schema:
@@ -126,30 +126,31 @@ paths:
       parameters:
         - in: body
           name: concert
+          description: >
+            New concert body. Example:
+              {
+                "artist": "Madonna",
+                "concert": "This is Madonna 2023",
+                "ticket_sales": 5000000
+              }
           schema:
             $ref: "#/definitions/CreateConcert"
-          # example:
-          #   {
-          #     "artist": "Madonna",
-          #     "concert": "This is Madonna 2023",
-          #     "ticket_sales": 5000000
-          #   }
       consumes:
         - application/json
       produces:
         - application/json
       responses:
         200:
-          description: Created concert
+          description: >
+            Created concert. Example:
+              {
+                "artist": "Madonna",
+                "concert": "This is Madonna 2023",
+                "ticket_sales": 5000000,
+                "create_date": "2023-09-08T14:47:29.915661"
+              }
           schema:
             $ref: "#/definitions/ListConcertsByArtistResponse"
-          # example:
-          #   {
-          #     "artist": "Madonna",
-          #     "concert": "This is Madonna 2023",
-          #     "ticket_sales": 5000000,
-          #     "create_date": "2023-09-08T14:47:29.915661"
-          #   }
         400:
           description: Bad request
           schema:
